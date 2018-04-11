@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssma.movie.dao.MovieMapper">
+	<select id="queryAllMovies" resultType="movie">
+		select * from movie
+	</select>
+	<select id="queryFiveMovies" resultType="movie" parameterType="int">
+		 select * from (select m.*,rownum rn
+      	from (select * from movie) m)
+      	where rn between #{arg0} and #{arg1} 
+	</select>
+	<select id="queryMoviesById" resultType="movie" parameterType="int">
+		select movie_Name,movie_Id,movie_Director,movie_Actor,movie_info,movie_Long,movie_Photo,movie_Date,play_Price
+		from movie m 
+		inner join play p on m.movie_id=p.play_movie
+		where movie_Id=#{arg0}
+	</select>
+	<select id="querySinglePlay" resultType="map" parameterType="int">
+		select play_Id,movie_Name,TO_CHAR(play_Time,'YYYY-MM-D HH24:MI:SS') as PLAY_TIME,play_Price
+		from play p
+		inner join movie m on p.play_movie=m.movie_id
+		where m.movie_id=#{arg0}
+	</select>
+	<select id="querySeatsByPlayId" resultType="string" parameterType="int">
+		select ticket_seat from ticket where ticket_play=#{arg0}
+	</select>
+	<select id="queryEmails" resultType="string">
+		select member_Email from member
+	</select>
+	<insert id="insertSingleMember" parameterType="member">
+		insert into member values(SEQ_MEMBER.nextval,#{member_Email},#{member_Pwd},#{member_Name},#{member_Phone},#{member_Money},#{member_Gender},#{member_Photo})
+	</insert>
+	<select id="querySingleMemberByEmail" resultType="member" parameterType="string">
+		select * from member where member_Email='${value}'
+	</select>
+	<insert id="insertSingleTicket" parameterType="ticket">
+		insert into ticket values(SEQ_TICKET.nextval,#{ticket_Play},#{ticket_Member},#{ticket_Code},#{ticket_Seat},#{ticket_Price},to_timestamp(TO_CHAR(sysdate,'yyyy-MM-dd hh24:mi:ss '), 'yyyy-mm-dd hh24:mi:ss'),#{ticket_Flag})
+	</insert>
+	<update id="updateSingleMember" parameterType="member">
+		update member
+		<set>
+					<if test="member_Email != null and member_Email != ''">
+								member_Email=#{member_Email},
+					</if>
+					<if test="member_Pwd != null and member_Pwd != ''">
+						member_Pwd=#{member_Pwd},
+					</if>
+					<if test="member_Name != null and member_Name != ''">
+						member_Name=#{member_Name},
+					</if>
+					<if test="member_Phone != null and member_Phone != ''">
+						member_Phone=#{member_Phone},
+					</if>
+					<if test="member_Gender != null and member_Gender != ''">
+						member_Gender=#{member_Gender},
+					</if>
+					<if test="member_Photo != null and member_Photo != ''">
+						member_Photo=#{member_Photo},
+					</if>
+					<if test="member_Money != null and member_Money != ''">
+						member_Money=#{member_Money}
+					</if>
+		</set>
+			where member_Id=#{member_Id}
+	</update>
+	<update id="saveMemberPhoto" parameterType="member">
+		update member set member_photo=#{member_Photo} where member_email=#{member_Email}
+	</update>
+	<update id="updateMemberMoney" parameterType="member">
+		update member set member_money=#{member_Money} where member_email=#{member_Email}
+	</update>
+	<select id="queryAllTicketsForMember" resultType="map">
+		select t.ticket_id,m.movie_name,m.movie_photo,TO_CHAR(p.play_time,'YYYY-MM-D HH24:MI:SS') as PLAY_TIME,t.ticket_price,t.ticket_seat
+		from member me inner join ticket t on me.member_id=t.ticket_member
+		inner join play p on t.ticket_play=p.play_id
+		inner join movie m on p.play_movie=m.movie_id
+		where  me.member_email='${value}'
+	</select>
+	<select id="queryTicketById" resultType="string">
+		select ticket_Price from ticket where ticket_id=${value}
+	</select>
+	<delete id="deleteTicketById" parameterType="string">
+		delete from ticket where ticket_id=${value}
+	</delete>
+</mapper>

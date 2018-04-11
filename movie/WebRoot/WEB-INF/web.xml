@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>movie</display-name>
+  <welcome-file-list>
+    <welcome-file>main/index.jsp</welcome-file>
+  </welcome-file-list>
+  <context-param>
+		<param-name>springPath</param-name>
+		<param-value>classpath:config/Spring.xml</param-value>
+	</context-param>
+	<!-- 检查用户是否登录过的web.xml配置 -->  
+	<filter>  
+	    <filter-name>AuthFilter</filter-name>  
+	    <filter-class>com.movie.filter.AuthFilter</filter-class>  
+	</filter>  
+	<filter-mapping>  
+	    <filter-name>AuthFilter</filter-name>  
+	    <url-pattern>/main/aboutMe.jsp</url-pattern>  
+	</filter-mapping> 
+		<filter-mapping>  
+	    <filter-name>AuthFilter</filter-name>  
+	    <url-pattern>/main/seat.jsp</url-pattern>  
+	</filter-mapping> 
+	
+	<servlet>
+	  	<servlet-name>MovieServlet</servlet-name>
+	  	<servlet-class>com.movie.controller.MovieServlet</servlet-class>
+	  	<load-on-startup>0</load-on-startup>
+  	</servlet>
+  	<servlet-mapping>
+  		<servlet-name>MovieServlet</servlet-name>
+  		<url-pattern>*.movie</url-pattern>
+  	</servlet-mapping>
+  	<servlet>
+  		<servlet-name>TicketServlet</servlet-name>
+  		<servlet-class>com.movie.controller.TicketServlet</servlet-class>
+  		<load-on-startup>0</load-on-startup>
+  	</servlet>
+  		<servlet-mapping>
+  		<servlet-name>TicketServlet</servlet-name>
+  		<url-pattern>*.ticket</url-pattern>
+  	</servlet-mapping>
+  	
+  		<servlet>
+		<servlet-name>UploadServlet</servlet-name>
+		<servlet-class>com.movie.controller.UploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UploadServlet</servlet-name>
+		<url-pattern>/upload</url-pattern>
+	</servlet-mapping>
+</web-app>

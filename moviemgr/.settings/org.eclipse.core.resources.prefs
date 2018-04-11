@@ -1,0 +1,12 @@
+eclipse.preferences.version=1
+encoding//WebRoot/adminJsp/adminLogin.jsp=UTF-8
+encoding//WebRoot/adminJsp/adminManager.jsp=UTF-8
+encoding//WebRoot/memberJsp/memberAdd.jsp=UTF-8
+encoding//WebRoot/memberJsp/memberUpdate.jsp=UTF-8
+encoding//WebRoot/playJsp/playAdd.jsp=UTF-8
+encoding//WebRoot/ticketJsp/ticketSearch.jsp=UTF-8
+encoding//src/sun/moviemgr/controller/AdminServlet.java=UTF-8
+encoding//src/sun/moviemgr/controller/CaptchaServlet.java=UTF-8
+encoding//src/sun/moviemgr/controller/MovieServlet.java=UTF-8
+encoding//src/sun/moviemgr/service/CaptchaService.java=UTF-8
+encoding//src/sun/moviemgr/service/CaptchaWordFactory.java=UTF-8

@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//WebRoot/main/index.jsp=UTF-8
+encoding//WebRoot/main/login.jsp=UTF-8
+encoding//WebRoot/main/preview.jsp=UTF-8
+encoding//WebRoot/main/register.jsp=UTF-8
+encoding//WebRoot/main/seat.jsp=UTF-8
+encoding//src/com/movie/controller/UploadServlet.java=UTF-8

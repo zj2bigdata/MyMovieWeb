@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sun.moviemgr.dao.PlayMapper">
+	<select id="findAll" resultType="map">
+	    select  p.play_id,to_char(p.play_time, 'yyyy-mm-dd hh24:mi') as play_time,m.movie_long,m.movie_name,l.language_name,k.kind_name,to_char(m.movie_date, 'yyyy-mm-dd hh24:mi') as movie_date
+	    from play p
+	    inner join movie m on p.play_movie=m.movie_id
+	    inner join language l on m.movie_language=l.language_id
+	    inner join kind k on m.movie_kind=k.kind_id
+	</select>
+	<!-- 分页 -->
+	<select id="selectPlays" resultType="map" parameterType="int">
+		    select * from (select m.*,rownum rn
+			from (select  p.play_id,to_char(p.play_time, 'yyyy-mm-dd hh24:mi') as play_time,m.movie_long,m.movie_name,l.language_name,k.kind_name,to_char(m.movie_date, 'yyyy-mm-dd hh24:mi') as movie_date
+		    from play p
+		    inner join movie m on p.play_movie=m.movie_id
+		    inner join language l on m.movie_language=l.language_id
+		    inner join kind k on m.movie_kind=k.kind_id) m)
+			where rn between #{arg0} and #{arg1} 
+	</select>
+	<!-- 插入 -->
+	<insert id="addPlay" parameterType="play">
+		insert into play values(SEQ_PLAY.NEXTVAL ,#{play_Movie},to_timestamp(#{play_Time},'yyyy-mm-dd hh24:mi:ss'),#{play_Price})
+	</insert>
+	<!-- 插入 -->
+	<insert id="updatePlay" parameterType="play">
+		update play set play_Time=to_timestamp(#{play_Time},'yyyy-mm-dd hh24:mi:ss'),play_Price=#{play_Price} 
+		where play_Id=#{play_Id}
+	</insert>
+	<delete id="deletePlay">
+		delete from play where play_id=${value}
+	</delete>
+</mapper>

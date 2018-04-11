@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sun.moviemgr.dao.TicketMapper">
+	<resultMap type="ticket" id="rm_ticket">
+		<result property="ticket_Date" column="ticket_Date"/>
+		<result property="ticket_Price" column="ticket_Price"/>
+		<result property="ticket_Seat" column="ticket_Seat"/>
+		<result property="ticket_Flag" column="ticket_Flag"/>
+		<association property="member" javaType="Member">
+			<result property="member_Name" column="member_Name"/>
+			<result property="member_Email" column="member_Email"/>
+		</association>
+		<association property="play" javaType="Play">
+			<result property="play_Time" column="play_Time"/>
+				<association property="movie" javaType="Movie">
+			<result property="movie_Name" column="movie_Name"/>
+		</association>
+		</association>
+		
+	</resultMap>
+	<select id="findByTicketId"  parameterType="string" resultMap="rm_ticket">
+		select  t.ticket_date,t.ticket_price,m.member_name,m.member_email,m.movie_name,p.play_time,t.ticket_seat,t.ticket_flag
+		from ticket t inner join member m on  t.ticket_member=m.member_id 
+		inner join play p on  t.ticket_play=p.play_id 
+		inner join movie m on p.play_movie=m.movie_id
+		where ticket_id=${value}
+	</select>
+	
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sun.moviemgr.dao.MovieMapper">
+	<select id="showMovies" resultType="movie">
+		select * from movie
+	</select>
+	<select id="findMovieById" resultType="movie">
+		select * from movie where movie_Id=${value}
+	</select>
+	<insert id="addYu"  parameterType="string">
+		insert into language values(SQE_LANGUAGE.NEXTVAL,'${value}')
+	</insert>
+	<insert id="addKind"  parameterType="string">
+		insert into kind values(SQE_KIND.NEXTVAL,'${value}')
+	</insert>
+	<insert id="addEd"  parameterType="string">
+		insert into EDITION values(SQE_ED.NEXTVAL,'${value}')
+	</insert>
+	<insert id="addMovie" parameterType="movie">
+		insert into movie values(SEQ_MOVIE.NEXTVAL,#{movie_Name},#{movie_Director},#{movie_Actor},#{movie_Info},#{movie_Language},#{movie_Kind},#{movie_Photo},#{movie_Long},to_timestamp(#{movie_Date},'yyyy-mm-dd hh24:mi:ss'),#{movie_Edition})
+	</insert>
+	<update id="updateMovie" parameterType="movie">
+		update movie set movie_Name=#{movie_Name},movie_Director=#{movie_Director},movie_Actor=#{movie_Actor},movie_Info=#{movie_Info},movie_Kind=#{movie_Kind},movie_Language=#{movie_Language},movie_Long=#{movie_Long},movie_Edition=#{movie_Edition}
+		where movie_Id=#{movie_Id}
+	</update>
+	<!-- 分页 -->
+	<select id="selectMovies3" resultType="movie" parameterType="int">  
+   			select * from (select m.*,rownum rn
+			from (select * from movie) m)
+			where rn between #{arg0} and #{arg1}  
+	</select>  
+	<delete id="deleteMovie" parameterType="string">
+		delete from movie where movie_id=${value}
+	</delete> 
+	
+	
+</mapper>

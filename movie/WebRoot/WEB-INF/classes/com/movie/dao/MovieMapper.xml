@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.movie.dao.MovieMapper">
+	<select id="findAll" resultMap="rm_movie">
+		select  m.movie_id,m.movie_name,m.movie_photo,m.movie_date,p.play_price
+		from movie m inner join play p on m.movie_id=p.play_movie
+		order by m.movie_id
+	</select>
+	
+	<select id="selectMovies" resultMap="rm_movie" parameterType="int">
+		select  m.movie_id,m.movie_name,m.movie_photo,m.movie_date,p.play_price
+		from movie m inner join play p on m.movie_id=p.play_movie
+		where m.movie_id between #{arg0} and #{arg1}
+		order by m.movie_id
+	</select>
+	
+	<select id="findById"  parameterType="string" resultType="movie">
+		select * from movie where movie_id=${value}
+	</select>
+	<select id="finSingleMember" resultType="member">
+		select * from member where member_email='${value}'
+	</select>
+	<select id="loadPhoto" resultType="String"  parameterType="string" >
+		select member_photo from member where member_email='${value}'
+	</select>
+	<insert id="addMember">
+		insert into member values(SEQ_MEMBER.nextval,#{member_email},#{member_pwd},#{member_name},#{member_phone},#{member_money},#{member_gender},#{member_photo})
+	</insert>
+	<update id="updateSingleMember" parameterType="string">
+		update member set member_email=#{member_email},member_pwd=#{member_pwd}
+		,member_name=#{member_name},member_phone=#{member_phone},member_gender=#{member_gender} where member_id=#{member_id}
+	</update>
+	<update id="updateMoney" parameterType="string">
+		update member set member_money=#{member_money} where member_id=#{member_id}
+	</update>
+	<update id="updateMoney2" parameterType="string">
+		update member set member_money=#{member_money} where member_email=#{member_email}
+	</update>
+	<update id="savePhoto" parameterType="member">
+		update member set member_photo=#{member_photo} where member_email=#{member_email}
+	</update>
+	<delete id="deleteTicket" parameterType="string">
+		delete from ticket where ticket_id=${value}
+	</delete>
+	<select id="findTime" resultType="play" parameterType="string">
+		select play_id,play_time from play p inner join movie m 
+		on p.play_movie=m.movie_id where m.movie_name='${value}'
+	</select>
+	<select id="findTicket" parameterType="string" resultType="string">
+		select ticket_price from ticket where ticket_id=${value}
+	</select>
+	<insert id="addTicket" parameterType="ticket">
+		insert into ticket values(SEQ_TICKET.nextval,#{ticket_play},#{ticket_member},#{ticket_code},#{ticket_seat},#{ticket_price},to_timestamp(TO_CHAR(sysdate,'yyyy-MM-dd hh24:mi:ss '), 'yyyy-mm-dd hh24:mi:ss'),#{ticket_flag})
+	</insert>
+	<select id="findSeats" parameterType="String" resultType="string">
+		select t.ticket_seat
+		from play p
+		inner join ticket t on p.play_id=t.ticket_play
+		where p.play_id=${value}
+	</select>
+	
+	<select id="findTickets" resultMap="rm_tickets">
+		select t.ticket_id,m.movie_name,p.play_time,t.ticket_price,t.ticket_seat
+		from member me inner join ticket t on me.member_id=t.ticket_member
+		inner join play p on t.ticket_play=p.play_id
+		inner join movie m on p.play_movie=m.movie_id
+		where  me.member_email='${value}'
+	</select>
+	
+	<resultMap type="movie" id="rm_movie">
+		<id property="movie_id" column="movie_id"/>
+		<result property="movie_name" column="movie_name"/>
+		<result property="movie_photo" column="movie_photo"/>
+		<result property="movie_date" column="movie_date"/>
+		<collection property="plays" ofType="Play">
+			<result property="play_price" column="play_price"/>
+		</collection>
+	</resultMap>
+	
+	<resultMap type="ticket" id="rm_tickets">
+			<id property="ticket_id" column="ticket_id"/>
+			<result property="ticket_seat" column="ticket_seat"/>
+			<result property="ticket_price" column="ticket_price"/>
+			<association property="play" javaType="play">
+				<result property="play_time" column="play_time"/>
+				<association property="movie" javaType="movie">
+					<result property="movie_name" column="movie_name"/>
+				</association>
+			</association>
+	</resultMap>
+</mapper>
